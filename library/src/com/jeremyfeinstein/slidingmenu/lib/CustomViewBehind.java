@@ -106,17 +106,21 @@ public class CustomViewBehind extends ViewGroup {
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent e) {
 		
-		Log.d(TAG, "Sliding- behind onInterceptTouchEvent return: " + !mChildrenEnabled);
+		Log.i(TAG, "Sliding- behind onInterceptTouchEvent return: " + !mChildrenEnabled);
 		
-		return super.onInterceptTouchEvent(e);//!mChildrenEnabled
+		super.onInterceptTouchEvent(e);
+		
+		return !mChildrenEnabled;//!mChildrenEnabled
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e) {
 		
-		Log.d(TAG, "Sliding- behind onTouchEvent return: " + !mChildrenEnabled);
+		Log.i(TAG, "Sliding- behind onTouchEvent return: " + !mChildrenEnabled);
 		
-		return super.onTouchEvent(e);//!mChildrenEnabled
+		super.onTouchEvent(e);
+		
+		return !mChildrenEnabled;//!mChildrenEnabled super.onTouchEvent(e)
 	}
 
 	@Override

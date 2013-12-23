@@ -34,7 +34,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 public class CustomViewAbove extends ViewGroup {
 
 	private static final String TAG = "CustomViewAbove";
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	private static final boolean USE_CACHE = false;
 
@@ -614,6 +614,8 @@ public class CustomViewAbove extends ViewGroup {
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		
 		Log.d(TAG, "Sliding- above onInterceptTouchEvent");
+		
+		super.onInterceptTouchEvent(ev);
 
 		if (!mEnabled)
 			return false;
@@ -626,6 +628,9 @@ public class CustomViewAbove extends ViewGroup {
 
 		if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP
 				|| (action != MotionEvent.ACTION_DOWN && mIsUnableToDrag)) {
+			
+			Log.i(TAG, "Sliding- above onInterceptTouchEvent endDrag is run");
+			
 			endDrag();
 			return false;
 		}
@@ -662,12 +667,19 @@ public class CustomViewAbove extends ViewGroup {
 			}
 			mVelocityTracker.addMovement(ev);
 		}
+		
+		Log.d(TAG, "Sliding- above onInterceptTouchEvent mIsBeingDragged: " + mIsBeingDragged);
+		
+		Log.d(TAG, "Sliding- above onInterceptTouchEvent mQuickReturn: " + mQuickReturn);
+		
 		return mIsBeingDragged || mQuickReturn;
 	}
 
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
+		
+		super.onTouchEvent(ev);
 		
 		Log.d(TAG, "Sliding- above onTouchEvent mEnabled: " + mEnabled);
 		
@@ -705,10 +717,24 @@ public class CustomViewAbove extends ViewGroup {
 			mLastMotionX = mInitialMotionX = ev.getX();
 			break;
 		case MotionEvent.ACTION_MOVE:
+			
+			Log.d(TAG, "Sliding- above onTouchEvent getScrollY(): " + getScrollY());
+			
+			Log.d(TAG, "Sliding- above onTouchEvent getScrollX(): " + getScrollX());
+			
+			Log.d(TAG, "Sliding- above onTouchEvent mIsBeingDragged: " + mIsBeingDragged);
+			
+			//当前状态处于“非拖拽状态”
 			if (!mIsBeingDragged) {	
 				determineDrag(ev);
-				if (mIsUnableToDrag)
-					return false;
+				
+				//当前不足以被拖拽
+				if (mIsUnableToDrag){
+					
+					Log.d(TAG, "Sliding- above onTouchEvent mIsUnableToDrag: " + mIsUnableToDrag);
+					
+					return super.onTouchEvent(ev);//false
+				}
 			}
 			if (mIsBeingDragged) {
 				// Scroll to follow the motion event
@@ -779,6 +805,9 @@ public class CustomViewAbove extends ViewGroup {
 			mLastMotionX = MotionEventCompat.getX(ev, pointerIndex);
 			break;
 		}
+		
+		Log.e(TAG, "Sliding- above onTouchEvent return true !" );
+		
 		return true;
 	}
 	
@@ -799,7 +828,7 @@ public class CustomViewAbove extends ViewGroup {
 			mLastMotionY = y;
 			setScrollingCacheEnabled(true);
 			// TODO add back in touch slop check
-		} else if (xDiff > mTouchSlop) {
+		} else if (xDiff > mTouchSlop){//  
 			mIsUnableToDrag = true;
 		}
 	}
